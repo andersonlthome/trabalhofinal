@@ -18,7 +18,7 @@ public class User {
     private String password;
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateB; // = new java.sql.Date(minhaData);
+    private LocalDate dateB;
     private String sex;
     private String cep;
     private String logradouro;
