@@ -1,14 +1,8 @@
 package br.com.trabalhofinal.web.dto;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import br.com.trabalhofinal.constraint.FieldMatch;
 
