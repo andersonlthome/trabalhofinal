@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 
 import br.com.trabalhofinal.constraint.FieldMatch;
 
-@FieldMatch.List({ // passar logica para front end 	
+@FieldMatch.List({ 
         @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match"),
         @FieldMatch(first = "email", second = "confirmEmail", message = "The email fields must match")
 })
@@ -104,7 +104,7 @@ public class UserRegistrationDto {
 		return dateB;
 	}
 
-    // não ta funcionando
+    
 	public void setdateB(String dateB) {
 		this.dateB = dateB;
 	}

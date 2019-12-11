@@ -38,9 +38,10 @@
 	<div class="container">
 		<br>
 		<h4>
-			Bem vindo <span sec:authentication="principal.username">User</span> :)
+			Bem vindo <span sec:authentication="principal.username" ></span> :)
 		</h4>
-		<table class="table" border="1">
+		
+		<table class="tabela" border="1">
 			<thead>
 				<tr>
 					<th>Produtos</th>
@@ -50,44 +51,107 @@
 					<th>Solicitar</th>
 				</tr>
 			</thread>
-			<tbody id="tabela">
+			<tbody id="ls-produtos">
 		    </tbody>
 		</table><br/><br><br><br>
+		
+		<table class="tabela" border="1">
+			<thead>
+				<tr>
+					<th>Usuário</th>
+					<th>Data da solicitação</th>
+					<th>Produto</th>
+					<th>Quantidade</th>
+					<th>Valor total</th>
+				</tr>
+			</thread>
+			<tbody id="ls-compra">
+		    </tbody>
+		</table><br/><br><br><br>
+		
 	</div>
 
-	<hr>
-	<form id="envio">
-		Nome: <input type="text" name="nome" id="nome"><br>
-		Idade: <input type="number" name="idade" id="idade"><br>
-		<input type="button" value="Enviar" id="enviar">
-	</form>
-	<br>
-	<hr>
 	
 	<footer>
-		<script>
-			function carregar(){
+		<script >
+			function carregarProdutos(){
 				$.ajax({
 					url:"http://localhost:8080/produtos",
 					type: 'GET',
 					cache:false,
-					}).then( function (data) {
+					}).then(function (data) {
 						for(var i=0;data.length>i;i++){
 							//Adicionando registros retornados na tabela
-							$('#tabela').append('<tr><td>'+data[i].produtos+'</td><td>'+data[i].medida+'</td><td>'+data[i].preco+'</td>'+'<td>'+data[i].qtde+'</td>'+'<td>'+'solicitar'+'</td></tr>');
+							$('#ls-produtos').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
+									'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
+									'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
+									'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
+									'<td id="number'+data[i].id+'">'+
+										'<input type="number" class="sol" id="sol'+data[i].id+
+									'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
+									'"min="0"">'+'</td></tr>');
 						}
 					}).fail(function () {
-						alert("Erro");
+						alert("Erro ao carregar a informação do banco de dados");
 					}
 				);
+			}
+			function carregarUsuario(){
+				$.ajax({
+					url:"http://localhost:8080/user",
+					type: 'GET',
+					cache:false,
+					}).then(function (data) {
+						for(var i=0;data.length>i;i++){
+							//Adicionando registros retornados na tabela
+							$('#tabela').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
+									'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
+									'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
+									'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
+									'<td id="number'+data[i].id+'">'+
+										'<input type="number" class="sol" id="sol'+data[i].id+
+									'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
+									'"min="0"">'+'</td></tr>');
+						}
+					}).fail(function () {
+						alert("Erro ao carregar a informação do banco de dados");
+					}
+				);
+			}
+			function calc(qtde,value,id) {
+				res = qtde - value;
+				if (value != null){
+					if(value >= 0 && res >= 0){
+						document.getElementById("qtde"+id).innerText = res;
+					};
+				};
+				carregarCompras();
+			}
+			function carregarCompras() {
+				var classesNodeList = document.querySelectorAll(".sol");
+				var classes = Array.prototype.slice.call(classesNodeList).map(function(element) {
+				    return element.value;
+				});
+				  
+				for(var i=0;data.length>i;i++){
+					//Adicionando registros retornados na tabela
+					$('#tabela').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
+							'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
+							'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
+							'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
+							'<td id="number'+data[i].id+'">'+
+								'<input type="number" class="sol" id="sol'+data[i].id+
+							'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
+							'"min="0"">'+'</td></tr>');
+				}
 			}
 			function salvar(){
 				// parâmetro data são os dados que serão transmitido para o servidor; parâmetro cache é apara não fazer cache de envio
 				$.ajax({
-					url:"http://172.26.16.1:8080/teste",
+					url: "http://localhost:8080/produtos",
 					type: 'POST',
 					data: {
-						"nome": $("#nome").val(),
+						"usuario": $('#sec:authentication="principal.username"').val(),
 						"idade": $("#idade").val()
 					},
 					cache:false,
@@ -109,8 +173,9 @@
 			}
 			$(document).ready(function () {
 				// chama o método GET
-				carregar();
-
+				carregarProdutos();
+				//calc();
+				
 				// click do botão
 				//$("#enviar").click(function () {
 					// chama o post

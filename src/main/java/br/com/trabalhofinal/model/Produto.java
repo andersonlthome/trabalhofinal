@@ -9,7 +9,7 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String produtos; //login
+    private String produtos;
     private String medida;
     private Float preco;
     private int qtde_disponivel;
