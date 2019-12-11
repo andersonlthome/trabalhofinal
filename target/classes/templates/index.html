@@ -102,17 +102,7 @@
 					type: 'GET',
 					cache:false,
 					}).then(function (data) {
-						for(var i=0;data.length>i;i++){
-							//Adicionando registros retornados na tabela
-							$('#tabela').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
-									'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
-									'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
-									'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
-									'<td id="number'+data[i].id+'">'+
-										'<input type="number" class="sol" id="sol'+data[i].id+
-									'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
-									'"min="0"">'+'</td></tr>');
-						}
+						//
 					}).fail(function () {
 						alert("Erro ao carregar a informação do banco de dados");
 					}
@@ -133,17 +123,18 @@
 				    return element.value;
 				});
 				  
-				for(var i=0;data.length>i;i++){
-					//Adicionando registros retornados na tabela
-					$('#tabela').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
-							'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
-							'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
-							'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
-							'<td id="number'+data[i].id+'">'+
-								'<input type="number" class="sol" id="sol'+data[i].id+
-							'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
-							'"min="0"">'+'</td></tr>');
-				}
+				for(var i=0;classes.length>i;i++){
+					if (classes[i] != 0){
+						//Adicionando registros retornados na tabela
+						$('#tabela').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
+								'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
+								'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
+								'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
+								'<td id="number'+data[i].id+'">'+
+									'<input type="number" class="sol" id="sol'+data[i].id+
+								'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
+								'"min="0"">'+'</td></tr>');
+					}					
 			}
 			function salvar(){
 				// parâmetro data são os dados que serão transmitido para o servidor; parâmetro cache é apara não fazer cache de envio
