@@ -50,7 +50,7 @@
 					<th>Quantidade Disponível</th>
 					<th>Solicitar</th>
 				</tr>
-			</thread>
+			</thead>
 			<tbody id="ls-produtos">
 		    </tbody>
 		</table><br/><br><br><br>
@@ -64,7 +64,7 @@
 					<th>Quantidade</th>
 					<th>Valor total</th>
 				</tr>
-			</thread>
+			</thead>
 			<tbody id="ls-compra">
 		    </tbody>
 		</table><br/><br><br><br>
@@ -82,7 +82,7 @@
 					}).then(function (data) {
 						for(var i=0;data.length>i;i++){
 							//Adicionando registros retornados na tabela
-							$('#ls-produtos').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
+							$('#ls-produtos').append('<tr><td id="produto'+data[i].id+'">'+data[i].produtos+'</td>'+
 									'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
 									'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
 									'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
@@ -96,18 +96,20 @@
 					}
 				);
 			}
-			function carregarUsuario(){
+			
+			function carregarUsuario(handleData){
 				$.ajax({
 					url:"http://localhost:8080/user",
 					type: 'GET',
 					cache:false,
 					}).then(function (data) {
-						//
+						handleData(data);
 					}).fail(function () {
 						alert("Erro ao carregar a informação do banco de dados");
 					}
 				);
 			}
+			
 			function calc(qtde,value,id) {
 				res = qtde - value;
 				if (value != null){
@@ -117,25 +119,56 @@
 				};
 				carregarCompras();
 			}
+			
 			function carregarCompras() {
 				var classesNodeList = document.querySelectorAll(".sol");
-				var classes = Array.prototype.slice.call(classesNodeList).map(function(element) {
+				var solicitacao = Array.prototype.slice.call(classesNodeList).map(function(element) {
 				    return element.value;
 				});
-				  
-				for(var i=0;classes.length>i;i++){
-					if (classes[i] != 0){
-						//Adicionando registros retornados na tabela
-						$('#tabela').append('<tr><td id="produtos'+data[i].id+'">'+data[i].produtos+'</td>'+
-								'<td id="medida'+data[i].id+'">'+data[i].medida+'</td>'+
-								'<td id="preco'+data[i].id+'">'+data[i].preco.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})+'</td>'+
-								'<td id="qtde'+data[i].id+'">'+data[i].qtde+'</td>'+
-								'<td id="number'+data[i].id+'">'+
-									'<input type="number" class="sol" id="sol'+data[i].id+
-								'" value=0 onChange="calc('+data[i].qtde+',value,'+data[i].id+')" max="'+data[i].qtde+
-								'"min="0"">'+'</td></tr>');
-					}					
+				var data = new Date();
+				
+				var user = carregarUsuario(function(user){
+					
+					//clearTable('ls-compra');
+					for(var i=0;solicitacao.length>i;i++){
+						if (solicitacao[i] != 0){							
+							$('#ls-compra').append('<tr><td id="user'+i+'">'+user+'</td>'+
+									'<td id="date'+i+'">'+data+'</td>'+
+									'<td id="produto-compra'+i+'">'+$("#produto"+i).value+'</td>'+
+									'<td id="sol-compra'+i+'">'+solicitacao[i]+'</td>'+
+									'<td id="val-total'+i+'">'+$("#preco"+i).value+'</td></tr>');
+						}
+						
+					} 
+					savedata();
+				}); 
 			}
+			function savedata() {
+				// criar botão que usa essa função, arrumar função
+				var obj = $('#myTable tbody tr').map(function() {
+					var $row = $(this);
+					var t1 = $row.find(':nth-child(1)').text();
+					var t2 = $row.find(':nth-child(2)').text();
+					var t3 = $row.find(':nth-child(3)').text();
+					
+					return {
+					    td_1: $row.find(':nth-child(1)').text(),
+					    td_2: $row.find(':nth-child(2)').text(),
+					    td_3: $row.find(':nth-child(3)').text()
+					   };
+				}).get();
+			}
+			
+			function clearTable(idTab){
+				var table = document.getElementById(idTab);
+				if(table!=null){
+					for(var i = table.rows.length - 1; i > 0; i--)
+					{
+					    table.deleteRow(i);
+					}
+				}				
+			}
+			
 			function salvar(){
 				// parâmetro data são os dados que serão transmitido para o servidor; parâmetro cache é apara não fazer cache de envio
 				$.ajax({
@@ -162,16 +195,9 @@
 				});
 
 			}
+			
 			$(document).ready(function () {
-				// chama o método GET
 				carregarProdutos();
-				//calc();
-				
-				// click do botão
-				//$("#enviar").click(function () {
-					// chama o post
-					//salvar();
-				//});
 			});
 		</script>
 	</footer>
